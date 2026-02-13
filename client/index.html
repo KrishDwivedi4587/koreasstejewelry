@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#FFF9F5" />
+    <meta
+      name="description"
+      content="Koreasste - Premium Artificial Jewelry"
+    />
+    <title>Koreasste | Modern Jewelry</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Razorpay Script (Load dynamically in production) -->
+    <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script> -->
+    <!-- Google Fonts: Playfair Display for Serif elegance, Montserrat for modern luxury -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Montserrat', 'sans-serif'],
+              serif: ['Playfair Display', 'serif'],
+            },
+            colors: {
+              brand: {
+                base: '#FFF9F5',       /* Very pale peach/white background */
+                peach: '#FDECE4',      /* Mild peach for sections */
+                terracotta: '#E09F87', /* Accent color for buttons/highlights */
+                brown: '#3C2F29',      /* Primary text color (Darkened for readability) */
+                dark: '#1A1412',       /* Headings (Almost black/brown) */
+                white: '#FFFFFF',
+                muted: '#6B5D58'       /* Muted text (Darkened) */
+              }
+            },
+            letterSpacing: {
+              'luxury': '0.2em',
+            },
+            transitionTimingFunction: {
+              'luxury': 'cubic-bezier(0.16, 1, 0.3, 1)',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #FFF9F5;
+      }
+      
+      /* Global Smooth Scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Premium Selection Color */
+      ::selection {
+        background-color: #E09F87;
+        color: white;
+      }
+
+      /* Utility Animations */
+      .fade-in-up {
+        animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      
+      .fade-in {
+        animation: fadeIn 0.8s ease-out forwards;
+        opacity: 0;
+      }
+
+      .scale-slow {
+        animation: scaleSlow 20s ease-in-out infinite alternate;
+      }
+      
+      .slide-in-right {
+        animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      /* Link Hover Underline Effect */
+      .link-underline {
+        position: relative;
+        display: inline-block;
+      }
+      
+      .link-underline::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        transform: scaleX(0);
+        height: 1px;
+        bottom: -2px;
+        left: 0;
+        background-color: currentColor;
+        transform-origin: bottom right;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      
+      .link-underline:hover::after,
+      .link-underline.active::after {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+      }
+
+      /* Delays */
+      .delay-100 { animation-delay: 0.1s; }
+      .delay-200 { animation-delay: 0.2s; }
+      .delay-300 { animation-delay: 0.3s; }
+      .delay-500 { animation-delay: 0.5s; }
+
+      /* Keyframes */
+      @keyframes fadeInUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeIn {
+        to { opacity: 1; }
+      }
+
+      @keyframes scaleSlow {
+        from { transform: scale(1); }
+        to { transform: scale(1.1); }
+      }
+
+      @keyframes slideInRight {
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
+      }
+
+      /* Invoice Printing Styles */
+      @media print {
+        body * {
+          visibility: hidden;
+        }
+        #printable-invoice, #printable-invoice * {
+          visibility: visible;
+        }
+        #printable-invoice {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          background: white;
+        }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.12.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
