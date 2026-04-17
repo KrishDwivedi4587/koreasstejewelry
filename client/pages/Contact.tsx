@@ -27,7 +27,7 @@ const Contact: React.FC = () => {
                 
                 <div className="flex flex-col items-center justify-center flex-grow">
                     <span className="text-gray-600 font-sans text-lg group-hover:text-brand-terracotta transition-colors duration-300 select-all">
-                        Koreasste@customer.in
+                        koreasste@contactus.biz
                     </span>
                     <span className="text-xs text-gray-400 mt-2">General Inquiries</span>
                 </div>
