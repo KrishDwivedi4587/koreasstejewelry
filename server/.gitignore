@@ -1,0 +1,138 @@
+# ========================
+# Dependencies & Lock Files
+# ========================
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ========================
+# Environment Variables (SENSITIVE)
+# ========================
+.env
+.env.*
+!.env.example
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ========================
+# Uploaded Files & Media
+# ========================
+uploads/
+temp/
+tmp/
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.mp4
+*.pdf
+
+# ========================
+# Database Files
+# ========================
+*.db
+*.sqlite
+*.sqlite3
+*.mongo
+dump/
+backups/
+*.backup
+
+# ========================
+# SSL Certificates & Keys (SENSITIVE)
+# ========================
+*.pem
+*.key
+*.crt
+*.cer
+*.cert
+*.pfx
+*.p12
+ssl/
+certificates/
+keys/
+
+# ========================
+# Logs
+# ========================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+debug.log
+
+# ========================
+# OS Files
+# ========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ========================
+# IDE & Editor Files
+# ========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.sublime-project
+*.sublime-workspace
+*.iml
+*.iws
+*.ipr
+.gradle/
+*.sublime-settings
+
+# ========================
+# Build Output
+# ========================
+dist/
+build/
+out/
+.next/
+
+# ========================
+# Testing & Coverage
+# ========================
+.nyc_output
+coverage/
+*.lcov
+.jest/
+test-results/
+
+# ========================
+# Runtime & Process Files
+# ========================
+.pm2/
+process.env
+pids/
+*.pid
+*.seed
+
+# ========================
+# IDE Generated Files
+# ========================
+.turbo/
+.eslintcache
+.stylelintcache
+
+# ========================
+# Node & NPM Cache
+# ========================
+.npm/
+.eslintignore

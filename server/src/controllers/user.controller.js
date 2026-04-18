@@ -1,4 +1,13 @@
 import User from '../models/User.js';
+import jwt from 'jsonwebtoken';
+
+const generateToken = (userId) => {
+  return jwt.sign(
+    { userId },
+    process.env.JWT_SECRET || 'your-secret-key',
+    { expiresIn: process.env.JWT_EXPIRY || '7d' }
+  );
+};
 
 export const registerUser = async (req, res, next) => {
   try {
@@ -23,12 +32,18 @@ export const registerUser = async (req, res, next) => {
 
     await user.save();
 
+    const token = generateToken(user._id);
+
     const userResponse = user.toObject();
     delete userResponse.password;
 
     res.status(201).json({
       success: true,
-      data: userResponse
+      message: 'User registered successfully',
+      data: {
+        ...userResponse,
+        token
+      }
     });
   } catch (error) {
     next(error);
@@ -48,19 +63,27 @@ export const loginUser = async (req, res, next) => {
       });
     }
 
-    if (user.password !== password) {
+    const isPasswordValid = await user.comparePassword(password);
+
+    if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
         message: 'Invalid email or password'
       });
     }
 
+    const token = generateToken(user._id);
+
     const userResponse = user.toObject();
     delete userResponse.password;
 
     res.status(200).json({
       success: true,
-      data: userResponse
+      message: 'Login successful',
+      data: {
+        ...userResponse,
+        token
+      }
     });
   } catch (error) {
     next(error);
@@ -115,9 +138,36 @@ export const updateUser = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
+      message: 'User updated successfully',
       data: userResponse
     });
   } catch (error) {
     next(error);
   }
 };
+
+export const getCurrentUser = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    const userResponse = user.toObject();
+    delete userResponse.password;
+
+    res.status(200).json({
+      success: true,
+      data: userResponse
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+

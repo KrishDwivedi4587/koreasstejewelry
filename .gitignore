@@ -1,4 +1,41 @@
-# Logs
+# ========================
+# Environment Variables (SENSITIVE)
+# ========================
+.env
+.env.*
+!.env.example
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local.php
+
+# ========================
+# Dependencies & Lock Files
+# ========================
+node_modules/
+client/node_modules/
+server/node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+*.lock
+
+# ========================
+# Build Output & Cache
+# ========================
+dist/
+build/
+client/dist/
+server/dist/
+out/
+.next/
+.vite/
+.turbo/
+
+# ========================
+# Logs & Debugging
+# ========================
 logs
 *.log
 npm-debug.log*
@@ -6,13 +43,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+debug.log
 
-node_modules
-dist
-dist-ssr
-*.local
-
+# ========================
 # Editor directories and files
+# ========================
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -22,32 +57,128 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.sublime-project
+.sublime-workspace
+*.iml
+*.iws
+*.ipr
+.gradle/
 
+# ========================
+# OS & System Files
+# ========================
+node_modules
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
 
 # ========================
-# Dependencies
+# Sensitive Data (CRITICAL)
 # ========================
-node_modules/
-client/node_modules/
+*.pem                          # Private keys
+*.key                          # Private keys
+*.crt                          # Certificates
+*.cer                          # Certificates
+*.cert                         # Certificates
+*.pfx                          # Certificate bundles
+*.p12                          # Certificate bundles
+ssl/
+certificates/
+keys/
+secrets/
+private/
 
 # ========================
-# Environment Variables
+# Database & Backups
 # ========================
-.env
-.env.*
+*.db
+*.sqlite
+*.sqlite3
+*.mongo
+dump/
+backups/
+*.backup
+*.sql
+*.tar.gz
+database/
+
+# ========================
+# Uploaded Files & Media
+# ========================
+uploads/
+temp/
+tmp/
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.mp4
+*.pdf
+public/uploads/
+
+# ========================
+# Testing & Coverage
+# ========================
+.nyc_output
+coverage
+coverage/
+*.lcov
+test-results/
+.jest/
+
+# ========================
+# Runtime & Process Management
+# ========================
+.pm2/
+process.env
+pids/
+*.pid
+*.seed
+.c9/
+
+# ========================
+# IDE Cache & Generated
+# ========================
+.eslintcache
+.stylelintcache
+.gradle/
+.project
+.classpath
+
+# ========================
+# OSX Specific
+# ========================
+.AppleDouble
+.LSOverride
+
+# ========================
+# Windows Specific
+# ========================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ========================
+# Local Environment
+# ========================
 client/.env.local
+server/.env
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
 
 # ========================
-# Build Output
+# Misc
 # ========================
-dist/
-build/
-client/dist/
+dist-ssr
+*.local
 
-# ========================
-# Vite Cache
-# ========================
-.vite/
 client/node_modules/.vite/
 client/node_modules/.vite-temp/
 
