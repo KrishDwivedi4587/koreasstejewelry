@@ -1,12 +1,12 @@
 import express from 'express';
 import { body } from 'express-validator';
 import {
-  registerUser,
-  loginUser,
-  getUserById,
-  updateUser,
-  getCurrentUser
-} from '../controllers/user.controller.js';
+  registerUserMock,
+  loginUserMock,
+  getUserByIdMock,
+  updateUserMock,
+  getCurrentUserMock
+} from '../controllers/user.mock.controller.js';
 import { handleValidationErrors } from '../middlewares/validate.middleware.js';
 import { authenticate } from '../middlewares/auth.middleware.js';
 
@@ -24,7 +24,7 @@ router.post(
     body('phone').optional().trim()
   ],
   handleValidationErrors,
-  registerUser
+  registerUserMock
 );
 
 router.post(
@@ -34,12 +34,12 @@ router.post(
     body('password').notEmpty().withMessage('Password is required')
   ],
   handleValidationErrors,
-  loginUser
+  loginUserMock
 );
 
-router.get('/profile', authenticate, getCurrentUser);
+router.get('/profile', authenticate, getCurrentUserMock);
 
-router.get('/:id', getUserById);
+router.get('/:id', getUserByIdMock);
 
 router.put(
   '/:id',
@@ -50,7 +50,7 @@ router.put(
     body('address').optional().isObject()
   ],
   handleValidationErrors,
-  updateUser
+  updateUserMock
 );
 
 export default router;

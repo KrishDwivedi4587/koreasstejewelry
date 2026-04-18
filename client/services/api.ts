@@ -9,6 +9,16 @@ class ApiService {
     this.token = localStorage.getItem('authToken');
   }
 
+  setAuthToken(token: string) {
+    this.token = token;
+    localStorage.setItem('authToken', token);
+  }
+
+  clearAuthToken() {
+    this.token = null;
+    localStorage.removeItem('authToken');
+  }
+
   private setToken(token: string) {
     this.token = token;
     localStorage.setItem('authToken', token);
@@ -46,6 +56,9 @@ class ApiService {
       body: JSON.stringify({ firstName, lastName, email, password, phone })
     });
     const data = await this.handleResponse<any>(response);
+    if (data.data?.token) {
+      this.setToken(data.data.token);
+    }
     return data.data;
   }
 
@@ -56,6 +69,9 @@ class ApiService {
       body: JSON.stringify({ email, password })
     });
     const data = await this.handleResponse<any>(response);
+    if (data.data?.token) {
+      this.setToken(data.data.token);
+    }
     return data.data;
   }
 
@@ -189,6 +205,28 @@ class ApiService {
     const response = await fetch(`${API_BASE_URL}/orders/${orderId}/cancel`, {
       method: 'PUT',
       headers: this.getHeaders()
+    });
+    const data = await this.handleResponse<any>(response);
+    return data.data;
+  }
+
+  // --- PAYMENTS API ---
+
+  async createPaymentIntent(items: CartItem[], shippingMethod: string) {
+    const response = await fetch(`${API_BASE_URL}/payments/create-intent`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify({ items, shippingMethod })
+    });
+    const data = await this.handleResponse<any>(response);
+    return data.data;
+  }
+
+  async verifyPayment(paymentData: any) {
+    const response = await fetch(`${API_BASE_URL}/payments/verify`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify(paymentData)
     });
     const data = await this.handleResponse<any>(response);
     return data.data;

@@ -3,6 +3,8 @@ import cors from 'cors';
 import productRoutes from './routes/product.routes.js';
 import productMockRoutes from './routes/product.mock.routes.js';
 import userRoutes from './routes/user.routes.js';
+import userMockRoutes from './routes/user.mock.routes.js';
+import paymentMockRoutes from './routes/payment.mock.routes.js';
 import cartRoutes from './routes/cart.routes.js';
 import orderRoutes from './routes/order.routes.js';
 import paymentRoutes from './routes/payment.routes.js';
@@ -32,16 +34,17 @@ app.use(generalLimiter);
 const useMockDB = process.env.USE_MOCK_DB === 'true';
 
 if (useMockDB) {
-  console.log('📦 Using Mock Database for Products');
+  console.log('📦 Using Mock Database for Products, Users, and Payments');
   app.use('/api/products', productMockRoutes);
+  app.use('/api/users', authLimiter, userMockRoutes);
+  app.use('/api/payments', paymentLimiter, paymentMockRoutes);
 } else {
   app.use('/api/products', productRoutes);
+  app.use('/api/users', authLimiter, userRoutes);
+  app.use('/api/payments', paymentLimiter, paymentRoutes);
 }
-
-app.use('/api/users', authLimiter, userRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/payments', paymentLimiter, paymentRoutes);
 app.use('/api/uploads', uploadLimiter, uploadRoutes);
 
 app.get('/api/health', (req, res) => {
