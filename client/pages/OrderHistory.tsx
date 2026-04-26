@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Package, ChevronRight, ShoppingBag, Loader2 } from 'lucide-react';
+import { Package, ShoppingBag, Loader2, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Order } from '../types';
 import { api } from '../services/api';
+
+const statusStyles: Record<string, string> = {
+  confirmed: 'bg-blue-50 text-blue-600',
+  pending: 'bg-yellow-50 text-yellow-600',
+  shipped: 'bg-purple-50 text-purple-600',
+  delivered: 'bg-green-50 text-green-600',
+  cancelled: 'bg-red-50 text-red-500',
+};
 
 const OrderHistory: React.FC = () => {
   const { user } = useAuth();
@@ -12,15 +20,18 @@ const OrderHistory: React.FC = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      if (user) {
+      if (user?._id) {
         try {
           const userOrders = await api.getMyOrders(user._id);
-          setOrders(userOrders);
+          setOrders(Array.isArray(userOrders) ? userOrders : []);
         } catch (err) {
-          console.error("Failed to load orders", err);
+          console.error('Failed to load orders', err);
+          setOrders([]);
         } finally {
           setLoading(false);
         }
+      } else {
+        setLoading(false);
       }
     };
     fetchOrders();
@@ -39,7 +50,7 @@ const OrderHistory: React.FC = () => {
     <div className="bg-brand-base min-h-screen pt-32 pb-24">
       <div className="max-w-5xl mx-auto px-6 lg:px-8">
         <div className="flex flex-col md:flex-row gap-12">
-          
+
           {/* Sidebar */}
           <div className="w-full md:w-64 space-y-2">
             <h1 className="text-2xl font-serif text-brand-dark mb-8 italic">My Account</h1>
@@ -60,58 +71,69 @@ const OrderHistory: React.FC = () => {
                 <div className="bg-white p-20 text-center border border-brand-peach/50 rounded-sm shadow-sm">
                   <ShoppingBag className="w-12 h-12 text-brand-peach mx-auto mb-6" strokeWidth={1} />
                   <p className="text-brand-muted italic font-serif text-lg mb-8">You haven't placed any orders yet.</p>
-                  <Link to="/products" className="bg-brand-dark text-white px-10 py-4 uppercase text-[10px] font-bold tracking-luxury hover:bg-brand-terracotta transition-all inline-block">
+                  <Link
+                    to="/products"
+                    className="bg-brand-dark text-white px-10 py-4 uppercase text-[10px] font-bold tracking-luxury hover:bg-brand-terracotta transition-all inline-block"
+                  >
                     Start Shopping
                   </Link>
                 </div>
               ) : (
-                orders.map((order) => (
-                  <div key={order.id} className="bg-white p-8 border border-brand-peach/50 shadow-sm hover:shadow-md transition-all rounded-sm">
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 border-b border-brand-peach pb-6">
-                      <div>
-                        <p className="text-[10px] uppercase tracking-luxury text-brand-muted mb-1 font-bold">Order #{order._id}</p>
-                        <p className="text-sm font-serif text-brand-dark italic">{new Date(order.createdAt).toLocaleDateString('en-IN', { dateStyle: 'long' })}</p>
-                      </div>
-                      <div className="flex items-center gap-6">
-                        <div className="text-right">
-                          <p className="text-[10px] uppercase tracking-luxury text-brand-muted mb-1 font-bold">Status</p>
-                          <span className={`text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full ${
-                            order.status === 'Delivered' ? 'bg-green-50 text-green-600' : 'bg-brand-peach/20 text-brand-terracotta'
-                          }`}>
-                            {order.status}
-                          </span>
+                orders.map((order) => {
+                  const status = order.orderStatus || order.status || 'confirmed';
+                  return (
+                    <div key={order._id} className="bg-white p-8 border border-brand-peach/50 shadow-sm hover:shadow-md transition-all rounded-sm">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 border-b border-brand-peach pb-6">
+                        <div>
+                          <p className="text-[10px] uppercase tracking-luxury text-brand-muted mb-1 font-bold">Order ID</p>
+                          <p className="text-xs font-mono text-brand-dark">{order._id}</p>
+                          <p className="text-sm font-serif text-brand-dark italic mt-1">
+                            {new Date(order.createdAt).toLocaleDateString('en-IN', { dateStyle: 'long' })}
+                          </p>
                         </div>
-                        <div className="text-right">
-                          <p className="text-[10px] uppercase tracking-luxury text-brand-muted mb-1 font-bold">Total</p>
-                          <p className="text-sm font-bold text-brand-dark">₹{order.totalAmount.toLocaleString('en-IN')}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      {order.items.map((item, idx) => (
-                        <div key={idx} className="flex items-center gap-4">
-                          <img src={item.image} alt={item.name} className="w-12 h-12 object-cover border border-brand-peach" />
-                          <div className="flex-1">
-                            <h4 className="text-xs font-serif text-brand-dark">{item.name}</h4>
-                            <p className="text-[10px] text-brand-muted uppercase">Qty: {item.quantity}</p>
+                        <div className="flex items-center gap-6">
+                          <div className="text-right">
+                            <p className="text-[10px] uppercase tracking-luxury text-brand-muted mb-1 font-bold">Status</p>
+                            <span className={`text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full ${statusStyles[status] || 'bg-brand-peach/20 text-brand-terracotta'}`}>
+                              {status}
+                            </span>
                           </div>
-                          <span className="text-xs font-medium text-brand-muted">₹{item.price.toLocaleString('en-IN')}</span>
+                          <div className="text-right">
+                            <p className="text-[10px] uppercase tracking-luxury text-brand-muted mb-1 font-bold">Total</p>
+                            <p className="text-sm font-bold text-brand-dark">₹{order.totalAmount.toLocaleString('en-IN')}</p>
+                          </div>
                         </div>
-                      ))}
+                      </div>
+
+                      <div className="space-y-4">
+                        {order.items.map((item, idx) => (
+                          <div key={idx} className="flex items-center gap-4">
+                            {item.image && (
+                              <img src={item.image} alt={item.name} className="w-12 h-12 object-cover border border-brand-peach rounded-sm" />
+                            )}
+                            <div className="flex-1">
+                              <h4 className="text-xs font-serif text-brand-dark">{item.name || `Product #${idx + 1}`}</h4>
+                              <p className="text-[10px] text-brand-muted uppercase">Qty: {item.quantity}</p>
+                            </div>
+                            <span className="text-xs font-medium text-brand-muted">₹{item.price.toLocaleString('en-IN')}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="mt-8 pt-6 border-t border-brand-peach flex justify-end">
+                        <Link
+                          to={`/order-success?id=${order._id}`}
+                          className="text-[10px] uppercase tracking-luxury text-brand-terracotta font-bold flex items-center gap-2 hover:underline"
+                        >
+                          View Details <ChevronRight className="w-3 h-3" />
+                        </Link>
+                      </div>
                     </div>
-                    
-                    <div className="mt-8 pt-6 border-t border-brand-peach flex justify-end">
-                      <Link to={`/product/${order.items[0].id}`} className="text-[10px] uppercase tracking-luxury text-brand-terracotta font-bold flex items-center gap-2 hover:underline">
-                        Order Details <ChevronRight className="w-3 h-3" />
-                      </Link>
-                    </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           </div>
-
         </div>
       </div>
     </div>

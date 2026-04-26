@@ -5,10 +5,11 @@ import productMockRoutes from './routes/product.mock.routes.js';
 import userRoutes from './routes/user.routes.js';
 import userMockRoutes from './routes/user.mock.routes.js';
 import paymentMockRoutes from './routes/payment.mock.routes.js';
+import paymentRoutes from './routes/payment.routes.js';
 import cartRoutes from './routes/cart.routes.js';
 import orderRoutes from './routes/order.routes.js';
-import paymentRoutes from './routes/payment.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
+import adminRoutes from './routes/admin.routes.js';
 import errorHandler from './middlewares/error.middleware.js';
 import { sanitizeInput } from './middlewares/validate.middleware.js';
 import {
@@ -43,18 +44,28 @@ if (useMockDB) {
   app.use('/api/users', authLimiter, userRoutes);
   app.use('/api/payments', paymentLimiter, paymentRoutes);
 }
-app.use('/api/cart', cartRoutes);
+
+// These routes handle mock/real internally via USE_MOCK_DB env
 app.use('/api/orders', orderRoutes);
+app.use('/api/cart', cartRoutes);
 app.use('/api/uploads', uploadLimiter, uploadRoutes);
 
+// Admin panel (mock-only for now)
+app.use('/api/admin', adminRoutes);
+
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ success: true, message: 'Server is running' });
+  res.status(200).json({
+    success: true,
+    message: 'Server is running',
+    mode: useMockDB ? 'mock' : 'mongodb',
+    timestamp: new Date().toISOString()
+  });
 });
 
 app.use('*', (req, res) => {
   res.status(404).json({
     success: false,
-    message: 'Route not found'
+    message: `Route not found: ${req.method} ${req.originalUrl}`
   });
 });
 

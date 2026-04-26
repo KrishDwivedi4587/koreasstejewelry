@@ -51,9 +51,17 @@ export const uploadLimiter = rateLimit({
 
 export const corsOptions = {
   origin: function(origin, callback) {
-    const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000').split(',');
-    
-    if (!origin || allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+    const configuredOrigins = (process.env.ALLOWED_ORIGINS || '').split(',').filter(Boolean);
+    // Always include common Vite/CRA dev ports
+    const allowedOrigins = [
+      ...configuredOrigins,
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:5173',
+    ];
+
+    if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development') {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));

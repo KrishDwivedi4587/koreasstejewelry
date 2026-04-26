@@ -18,6 +18,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Profile from './pages/Profile';
 import OrderHistory from './pages/OrderHistory';
+import Admin from './pages/Admin';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 
@@ -66,6 +67,8 @@ const AppContent: React.FC = () => {
               <OrderHistory />
             </ProtectedRoute>
           } />
+          {/* Admin Panel — has its own login guard */}
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </main>
       <Footer />

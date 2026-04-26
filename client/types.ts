@@ -45,13 +45,28 @@ export interface PaymentDetails {
   currency: string;
 }
 
+export interface OrderItem {
+  productId: string;
+  name: string;
+  price: number;
+  image: string;
+  category: string;
+  quantity: number;
+}
+
 export interface Order {
   _id: string;
   userId: string;
-  items: CartItem[];
+  items: OrderItem[];
   totalAmount: number;
-  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
-  paymentMethod: string;
+  subtotal?: number;
+  shipping?: number;
+  orderStatus: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+  status?: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+  paymentStatus?: string;
+  paymentMethod?: string;
+  transactionId?: string;
+  gatewayOrderId?: string;
   shippingAddress: {
     firstName: string;
     lastName: string;
@@ -82,7 +97,9 @@ export interface CartContextType {
 export interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (firstName: string, lastName: string, email: string, password: string, phone?: string) => Promise<void>;
   logout: () => void;
+  updateProfile: (firstName?: string, lastName?: string, phone?: string, address?: User['address']) => Promise<void>;
 }

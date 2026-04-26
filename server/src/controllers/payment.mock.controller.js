@@ -77,22 +77,34 @@ export const verifyPaymentMock = async (req, res, next) => {
     }
 
     // Create order in mock DB
-    const orderId = `mock_order_${Date.now()}`;
+    const orderId = `mock_order_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+    const subtotalVal = totals?.subtotal ?? items.reduce((s, i) => s + (i.price * i.quantity), 0);
+    const shippingVal = totals?.shipping ?? 0;
+
     const order = {
       _id: orderId,
       userId,
-      items,
+      items: items.map(item => ({
+        productId: item.productId,
+        name: item.name,
+        price: item.price,
+        image: item.image,
+        category: item.category,
+        quantity: item.quantity,
+      })),
       shippingAddress: shippingDetails,
-      totalAmount: totals.total,
-      subtotal: totals.subtotal,
-      shipping: totals.shipping,
+      totalAmount: totals?.total ?? (subtotalVal + shippingVal),
+      subtotal: subtotalVal,
+      shipping: shippingVal,
+      paymentMethod: 'mock_payment',
       paymentStatus: 'paid',
       orderStatus: 'confirmed',
+      status: 'confirmed',
       transactionId: razorpay_payment_id,
       gatewayOrderId: razorpay_order_id,
-      paymentDate: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date()
+      paymentDate: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
     mockDB.orders.push(order);

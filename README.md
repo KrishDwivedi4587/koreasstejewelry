@@ -1,146 +1,117 @@
-# Koreasste E-Commerce Project
+# Koreasste Jewelry — E-Commerce Platform
 
-Complete full-stack e-commerce solution with React frontend and Node.js/Express/MongoDB backend.
+A full-stack e-commerce application for **Koreasste Jewelry & Beauwell Skincare**, built with React (TypeScript/Vite) on the frontend and Node.js/Express on the backend with an in-memory mock database for demo use.
 
-## Project Structure
+---
 
-```
-koreasste-jewelry-advanced/
-├── client/          (React + TypeScript + Vite)
-├── server/          (Node.js + Express + MongoDB)
-```
+## 🚀 Quick Start
 
-## Prerequisites
-
-- Node.js 18+
-- MongoDB (local or Atlas)
-- npm or yarn
-
-## Setup Instructions
-
-### 1. Backend Setup
-
+### Backend
 ```bash
 cd server
 npm install
+npm run dev
+# → Runs on http://localhost:5000
 ```
 
-Configure MongoDB in `.env`:
-```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/koreasste-jewelry
-NODE_ENV=development
-```
-
-Start the backend:
-```bash
-npm run dev    # Development with nodemon
-npm start      # Production
-```
-
-The server will automatically seed all 47 products on first startup.
-
-### 2. Frontend Setup
-
+### Frontend
 ```bash
 cd client
 npm install
-npm run dev    # Start Vite dev server
+npm run dev
+# → Runs on http://localhost:3000
 ```
 
-Frontend runs on `http://localhost:5173` and connects to backend at `http://localhost:5000/api`.
+---
 
-## API Endpoints
+## 🔐 Credentials
 
-### Products
-- `GET /api/products` - Get all products (optional: `?category=Earrings`)
-- `GET /api/products/:id` - Get product by ID
-- `POST /api/products` - Create product
-- `PUT /api/products/:id` - Update product
-- `DELETE /api/products/:id` - Delete product
+### Admin Panel
+- URL: `http://localhost:3000/#/admin`
+- Email: `admin@koreasste.com`
+- Password: `Koreasste@admin060580`
 
-### Users
-- `POST /api/users/register` - Register user
-- `POST /api/users/login` - Login user
-- `GET /api/users/:id` - Get user profile
-- `PUT /api/users/:id` - Update user profile
+### Demo User (or register a new one)
+Register at `/signup` with any email/password.
 
-### Cart
-- `GET /api/cart/:userId` - Get user's cart
-- `POST /api/cart/:userId/add` - Add item to cart
-- `PUT /api/cart/:userId/item` - Update cart item quantity
-- `DELETE /api/cart/:userId/remove` - Remove item from cart
-- `DELETE /api/cart/:userId` - Clear entire cart
+---
 
-### Orders
-- `POST /api/orders` - Create order (from cart)
-- `GET /api/orders?userId=...` - Get user's orders
-- `GET /api/orders/:id` - Get order details
-- `PUT /api/orders/:id/status` - Update order status
-- `PUT /api/orders/:id/cancel` - Cancel pending order
+## ✨ Features
 
-## Available Products
+| Feature | Status |
+|---|---|
+| Product listing & detail pages | ✅ |
+| Search & category filtering | ✅ |
+| Shopping cart (persistent per user) | ✅ |
+| User registration & login | ✅ |
+| Session persistence (page refresh) | ✅ |
+| Checkout with shipping form | ✅ |
+| Mock Razorpay payment modal | ✅ |
+| Order history & details | ✅ |
+| Printable invoice | ✅ |
+| Profile editing | ✅ |
+| Admin dashboard | ✅ |
+| Admin product CRUD | ✅ |
+| Admin order status management | ✅ |
+| Admin user listing | ✅ |
 
-The system comes with 47 pre-loaded products:
-- **Lifestyle Jewelry**: 41 products (Earrings, Necklaces, Bracelets, Full Sets)
-- **Beauwell Skincare**: 6 products (Masks, Anti-Aging, Moisturizers, Exfoliators, Device Tech)
+---
 
-## Features
+## 🛠 Tech Stack
 
-✅ Complete REST API with Express  
-✅ MongoDB database with Mongoose models  
-✅ Request validation with express-validator  
-✅ Centralized error handling  
-✅ MVC architecture pattern  
-✅ Product catalog with categories  
-✅ User registration and authentication  
-✅ Shopping cart management  
-✅ Order management system  
-✅ Stock tracking  
-✅ TypeScript support (frontend)  
-✅ Vite for fast development  
+**Frontend:** React 18 · TypeScript · Vite · Tailwind CSS v3 · React Router v6 · Lucide React
 
-## Development Workflow
+**Backend:** Node.js · Express · JWT · bcryptjs · Helmet · express-rate-limit · express-validator
 
-**Terminal 1 - Backend:**
-```bash
-cd server && npm run dev
+**Database:** In-memory mock DB (demo) or MongoDB (set `USE_MOCK_DB=false`)
+
+---
+
+## ⚙️ Environment Variables
+
+### `server/.env`
+```
+PORT=5000
+USE_MOCK_DB=true
+JWT_SECRET=your-super-secret-jwt-key-change-in-production
+MONGODB_URI=mongodb://localhost:27017/koreasste
+NODE_ENV=development
+PAYMENT_SUCCESS_RATE=95
 ```
 
-**Terminal 2 - Frontend:**
-```bash
-cd client && npm run dev
+### `client/.env.local`
+```
+VITE_API_URL=http://localhost:5000/api
 ```
 
-Visit `http://localhost:5173` in your browser.
+---
 
-## Key Files
+## 📁 Project Structure
 
-### Backend
-- `server/src/app.js` - Express app configuration
-- `server/src/server.js` - Entry point
-- `server/src/seeds/products.seed.js` - Product data seeding
-- `server/src/models/` - Database schemas
-- `server/src/controllers/` - Business logic
-- `server/src/routes/` - API route definitions
+```
+koreasste-jewelry-advanced/
+├── client/                    # React + Vite frontend
+│   ├── components/            # Reusable UI components
+│   ├── context/               # AuthContext, CartContext
+│   ├── pages/                 # Page components
+│   ├── services/              # API service layer
+│   ├── index.css              # Global styles + Tailwind
+│   └── tailwind.config.js     # Tailwind configuration
+│
+└── server/                    # Express backend
+    └── src/
+        ├── config/            # DB + mock DB config
+        ├── controllers/       # Route handlers (real + mock)
+        ├── middlewares/       # Auth, validation, security
+        ├── models/            # Mongoose models
+        ├── routes/            # Express routes
+        └── seeds/             # Product seed data
+```
 
-### Frontend
-- `client/services/api.ts` - Backend API integration
-- `client/context/` - State management (Auth, Cart)
-- `client/pages/` - Page components
-- `client/components/` - Reusable UI components
+---
 
-## Notes
+## 📝 Notes
 
-- Passwords are stored as plain text (for development only - use bcrypt in production)
-- Authentication uses simulated tokens (implement JWT for production)
-- CORS is enabled for local development
-- MongoDB must be running before starting the server
-
-## Next Steps
-
-1. Implement proper password hashing (bcrypt)
-2. Add JWT-based authentication
-3. Implement payment gateway integration
-4. Add image upload functionality
-5. Set up deployment (Vercel for frontend, Heroku/Railway for backend)
+- **Data persistence:** The app uses an in-memory mock DB by default. All data (users, orders) is reset on server restart. Switch to MongoDB by setting `USE_MOCK_DB=false` and providing a valid `MONGODB_URI`.
+- **Payment:** The Razorpay payment modal is a simulation for demo purposes. Real integration requires Razorpay API keys.
+- **Images:** Product images are served from mock data URLs. Cloudinary upload integration requires a valid account.

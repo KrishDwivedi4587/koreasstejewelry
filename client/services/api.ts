@@ -1,4 +1,4 @@
-import { User, Product, Order, CartItem, PaymentDetails } from '../types';
+import { User, Product, Order, CartItem } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -15,16 +15,6 @@ class ApiService {
   }
 
   clearAuthToken() {
-    this.token = null;
-    localStorage.removeItem('authToken');
-  }
-
-  private setToken(token: string) {
-    this.token = token;
-    localStorage.setItem('authToken', token);
-  }
-
-  private clearToken() {
     this.token = null;
     localStorage.removeItem('authToken');
   }
@@ -57,7 +47,7 @@ class ApiService {
     });
     const data = await this.handleResponse<any>(response);
     if (data.data?.token) {
-      this.setToken(data.data.token);
+      this.setAuthToken(data.data.token);
     }
     return data.data;
   }
@@ -70,7 +60,7 @@ class ApiService {
     });
     const data = await this.handleResponse<any>(response);
     if (data.data?.token) {
-      this.setToken(data.data.token);
+      this.setAuthToken(data.data.token);
     }
     return data.data;
   }
@@ -109,58 +99,15 @@ class ApiService {
     return data.data;
   }
 
-  // --- CART API ---
-
-  async getCart(userId: string) {
-    const response = await fetch(`${API_BASE_URL}/cart/${userId}`, {
-      headers: this.getHeaders()
-    });
-    const data = await this.handleResponse<any>(response);
-    return data.data;
-  }
-
-  async addToCart(userId: string, productId: string, quantity: number) {
-    const response = await fetch(`${API_BASE_URL}/cart/${userId}/add`, {
-      method: 'POST',
-      headers: this.getHeaders(),
-      body: JSON.stringify({ productId, quantity })
-    });
-    const data = await this.handleResponse<any>(response);
-    return data.data;
-  }
-
-  async updateCartItem(userId: string, productId: string, quantity: number) {
-    const response = await fetch(`${API_BASE_URL}/cart/${userId}/item`, {
-      method: 'PUT',
-      headers: this.getHeaders(),
-      body: JSON.stringify({ productId, quantity })
-    });
-    const data = await this.handleResponse<any>(response);
-    return data.data;
-  }
-
-  async removeFromCart(userId: string, productId: string) {
-    const response = await fetch(`${API_BASE_URL}/cart/${userId}/remove`, {
-      method: 'DELETE',
-      headers: this.getHeaders(),
-      body: JSON.stringify({ productId })
-    });
-    const data = await this.handleResponse<any>(response);
-    return data.data;
-  }
-
-  async clearCart(userId: string) {
-    const response = await fetch(`${API_BASE_URL}/cart/${userId}`, {
-      method: 'DELETE',
-      headers: this.getHeaders()
-    });
+  async searchProducts(query: string): Promise<Product[]> {
+    const response = await fetch(`${API_BASE_URL}/products?search=${encodeURIComponent(query)}`);
     const data = await this.handleResponse<any>(response);
     return data.data;
   }
 
   // --- ORDERS API ---
 
-  async createOrder(userId: string, shippingAddress: any, paymentMethod: string, items: CartItem[]) {
+  async createOrder(userId: string, shippingAddress: any, paymentMethod: string, items: CartItem[], totals?: any) {
     const response = await fetch(`${API_BASE_URL}/orders`, {
       method: 'POST',
       headers: this.getHeaders(),
@@ -168,22 +115,23 @@ class ApiService {
         userId,
         shippingAddress,
         paymentMethod,
-        items
+        items,
+        totals
       })
     });
     const data = await this.handleResponse<any>(response);
     return data.data;
   }
 
-  async getMyOrders(userId: string) {
+  async getMyOrders(userId: string): Promise<Order[]> {
     const response = await fetch(`${API_BASE_URL}/orders?userId=${userId}`, {
       headers: this.getHeaders()
     });
     const data = await this.handleResponse<any>(response);
-    return data.data;
+    return data.data ?? [];
   }
 
-  async getOrderById(orderId: string) {
+  async getOrderById(orderId: string): Promise<Order> {
     const response = await fetch(`${API_BASE_URL}/orders/${orderId}`, {
       headers: this.getHeaders()
     });
@@ -227,6 +175,71 @@ class ApiService {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify(paymentData)
+    });
+    const data = await this.handleResponse<any>(response);
+    return data.data;
+  }
+
+  // --- ADMIN API ---
+
+  async getAdminStats() {
+    const response = await fetch(`${API_BASE_URL}/admin/stats`, {
+      headers: this.getHeaders()
+    });
+    const data = await this.handleResponse<any>(response);
+    return data.data;
+  }
+
+  async getAdminUsers() {
+    const response = await fetch(`${API_BASE_URL}/admin/users`, {
+      headers: this.getHeaders()
+    });
+    const data = await this.handleResponse<any>(response);
+    return data.data ?? [];
+  }
+
+  async getAdminOrders() {
+    const response = await fetch(`${API_BASE_URL}/admin/orders`, {
+      headers: this.getHeaders()
+    });
+    const data = await this.handleResponse<any>(response);
+    return data.data ?? [];
+  }
+
+  async adminUpdateProduct(id: string, updates: Partial<Product>) {
+    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+      method: 'PUT',
+      headers: this.getHeaders(),
+      body: JSON.stringify(updates)
+    });
+    const data = await this.handleResponse<any>(response);
+    return data.data;
+  }
+
+  async adminDeleteProduct(id: string) {
+    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+      method: 'DELETE',
+      headers: this.getHeaders()
+    });
+    const data = await this.handleResponse<any>(response);
+    return data.data;
+  }
+
+  async adminCreateProduct(product: Omit<Product, '_id'>) {
+    const response = await fetch(`${API_BASE_URL}/products`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify(product)
+    });
+    const data = await this.handleResponse<any>(response);
+    return data.data;
+  }
+
+  async adminUpdateOrderStatus(orderId: string, status: string) {
+    const response = await fetch(`${API_BASE_URL}/admin/orders/${orderId}/status`, {
+      method: 'PUT',
+      headers: this.getHeaders(),
+      body: JSON.stringify({ status })
     });
     const data = await this.handleResponse<any>(response);
     return data.data;
